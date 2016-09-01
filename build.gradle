@@ -1,0 +1,54 @@
+group 'Kaa'
+version '1.0.0'
+
+// configure plugins
+apply plugin: 'java'
+apply plugin: 'application'
+apply plugin: 'idea'
+
+// configure repositories
+repositories {
+    mavenCentral()
+}
+
+// configure dependencies
+dependencies {
+    // local jar files
+    compile fileTree(dir: 'lib', include: ['*.jar'])
+
+    // logging
+    compile group: 'ch.qos.logback', name: 'logback-classic', version: 'latest.release'
+
+    // testing
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+}
+
+
+// configure compatibility
+allprojects {
+    tasks.withType(JavaCompile) {
+        sourceCompatibility = '1.8'
+        targetCompatibility = '1.8'
+    }
+}
+
+// configure main class name used for run task
+mainClassName = 'com.stagnationlab.kaa.Application'
+
+// configure run task
+run {
+    systemProperties = System.properties
+}
+
+// configure jar task
+jar {
+    // set jar main class manifest
+    manifest {
+        attributes 'Main-Class': mainClassName
+    }
+
+    // embed all the dependencies in the generated jar
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
