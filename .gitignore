@@ -3,3 +3,5 @@
 /build
 /state.properties
 /logs
+/out
+/state.properties_bckp
